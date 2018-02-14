@@ -34,10 +34,12 @@ def read_dataset(data_txt_file, image_data_path):
     i = 0
     for line in text_file:
         name,l = line.split(',')
-        name = name+".jpg"
+        name = "/"+name+".jpg"
         img = skimage.io.imread(image_data_path + name)
         data['image'][i] = img
         data['label'][i][0] = float(l)
+        i+=1
+    text_file.close()
     return data
 
 def FileLen(path_to_file):
