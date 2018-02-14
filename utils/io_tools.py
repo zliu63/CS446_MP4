@@ -38,7 +38,6 @@ def read_dataset(data_txt_file, image_data_path):
         img = skimage.io.imread(image_data_path + name)
         data['image'][i] = img
         data['label'][i][0] = float(l)
-    pass
     return data
 
 def FileLen(path_to_file):
