@@ -30,8 +30,16 @@ class SupportVectorMachine(LinearModel):
         loss_grad = None
         # Implementation here.
         pass
+        N = y.shape[0]
+        K = self.w.shape[0]
+        reg_grad = self.w_decay_factor*self.w
+        loss_grad = np.zeros((K,1))
+        for i in range(N):
+            indicator = 1. if f[i][0] < 1 else 0.
+            x = self.x[i].reshape(K,1)
+            loss_grad += -y[i][0]*x*indicator
         total_grad = reg_grad + loss_grad
-        return total_loss
+        return total_grad
 
     def total_loss(self, f, y):
         """The sum of the loss across batch examples + L2 regularization.
@@ -43,12 +51,10 @@ class SupportVectorMachine(LinearModel):
         Returns:
             total_loss (float): sum hinge loss + reguarlization.
         """
-
-        hinge_loss = None
-        l2_loss = None
         # Implementation here.
-        pass
-
+        l2_loss = 0.5*self.w_decay_factor*(np.linalg.norm(self.w)**2)
+        z = np.matmul(y.transpose(),f)[0][0]
+        hinge_loss = max(0, 1-z)
         total_loss = hinge_loss + l2_loss
         return total_loss
 
@@ -61,7 +67,9 @@ class SupportVectorMachine(LinearModel):
             (numpy.ndarray): Hard predictions from the score, f,
               dimension (N,1). Tie break 0 to 1.0.
         """
-        y_predict = None
+        N = f.shape[0]
+        y_predict = np.zeros((N,1))
         # Implementation here.
-        pass
+        for i in range(N):
+            y_predict[i][0] = 1. if f[i][0] >= 0 else -1.
         return y_predict

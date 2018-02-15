@@ -36,6 +36,12 @@ class LinearModel(object):
         self.w = None
         self.x = None
         # Implementation here.
+        if w_init == 'zeros':
+            self.w = np.zeros((ndims+1,1)) 
+        elif w_init == 'ones':
+            self.w = np.ones((ndims+1,1))
+        else:
+            self.w = np.random.uniform(0,1,ndims+1)
         pass
 
     def forward(self, x):
@@ -52,8 +58,8 @@ class LinearModel(object):
             (numpy.ndarray): Dimension of (N,1)
         """
         # Implementation here.
-        pass
-
+        self.x = np.insert(x,x.shape[1],1,axis=1)
+        f = np.matmul(self.x,self.w)
         return f
 
     @abc.abstractmethod

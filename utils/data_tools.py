@@ -32,16 +32,22 @@ def preprocess_data(data, process_method='default'):
         str to data['image'], then return data.
     """
     if process_method == 'raw':
-        pass
-
+        data['image'] = data['image']/255.
+        data = remove_data_mean(data)
+        data = flatten_data(data)
     elif process_method == 'default':
-        pass
-
+        data['image'] = data['image']/255.
+        data['image'] = color.rgb2gray(data['image'])
+        data['image'] = color.gray2rgb(data['image'])
     elif process_method == 'custom':
         # Design your own feature!
         pass
     return data
 
+def flatten_data(data):
+    N = data['image'].shape[0]
+    data['image'] = data['image'].reshape(N,8*8*3)
+    return data
 
 def compute_image_mean(data):
     """ Computes mean image.
@@ -52,9 +58,11 @@ def compute_image_mean(data):
     Returns:
         image_mean(numpy.ndarray): Avaerage across the example dimension.
     """
-    image_mean = None
-    pass
-    return image_mean
+    image_mean = np.zeros((8,8,3))
+    N = data['image'].shape[0]
+    for i in range(N):
+        image_mean += data['image'][i]
+    return image_mean/N
 
 
 def remove_data_mean(data):
@@ -66,5 +74,8 @@ def remove_data_mean(data):
     Returns:
         data(dict): Remove mean from data['image'] and return data.
     """
-    pass
+    N = data['image'].shape[0]
+    mean = compute_image_mean(data)
+    for i in range(N):
+        data['image'][i] -= mean
     return data

@@ -34,7 +34,27 @@ def train_model(data, model, learning_rate=0.001, batch_size=16,
 
     # Performs gradient descent. (This function will not be graded.)
     pass
-
+    x = data['image']
+    y = data['label']
+    N = x.shape[0]
+    num_steps_per_epoch = np.ceil(N/batch_size)
+    num_epoch = np.ceil(num_steps/num_steps_per_epoch)
+    count = 0
+    for epoch in range(num_epoch):
+        #shuffle data if needed
+        if shuffle:
+            x,y = unison_shuffled(x,y)
+        for i in range(num_steps_per_epoch):
+            if count >= num_steps:
+                return model
+            if i == (num_steps_per_epoch - 1):
+                x_batch = x[i*batch_size:N]
+                y_batch = y[i*batch_size:N]
+            else:
+                x_batch = x[i*batch_size:(i+1)*batch_size]
+                y_batch = y[i*batch_size:(i+1)*batch_size]
+            model = update_step(x_batch,y_batch,model,learning_rate)
+            count += 1
     return model
 
 
@@ -48,6 +68,10 @@ def update_step(x_batch, y_batch, model, learning_rate):
     """
     # Implementation here. (This function will not be graded.)
     pass
+    f = model.forward(x_batch)
+    g = model.backward(f,y_batch)
+    model.w = model.w - learning_rate*g
+    return model
 
 
 def train_model_qp(data, model):
@@ -103,6 +127,19 @@ def eval_model(data, model):
         acc(float): model accuracy on data.
     """
     # Implementation here.
-    loss = 0
-    acc = 0
+    x = data['image']
+    y = data['label']
+    f = model.forward(x)
+    loss = model.total_loss(f,y)
+    N = y.shape[0]
+    err = 0
+    for i in range(N):
+        if y[i][0] != f[i][0]:
+            err += 1
+    acc = 1 - err/N
     return loss, acc
+
+def unison_shuffled(a, b):
+    assert len(a) == len(b)
+    p = np.random.permutation(len(a))
+    return a[p], b[p]
