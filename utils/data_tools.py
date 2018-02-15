@@ -37,11 +37,18 @@ def preprocess_data(data, process_method='default'):
         data = flatten_data(data)
     elif process_method == 'default':
         data['image'] = data['image']/255.
+        original = data['image']
         data['image'] = color.rgb2gray(data['image'])
         data['image'] = color.gray2rgb(data['image'])
+        data['image'] = data['image'] - original
+        data['image'] = np.absolute(data['image'])
+        data = remove_data_mean(data)
+        data = flatten_data(data)
     elif process_method == 'custom':
         # Design your own feature!
-        pass
+        data['image'] = data['image']/255.
+        data = remove_data_mean(data)
+        data = flatten_data(data)
     return data
 
 def flatten_data(data):

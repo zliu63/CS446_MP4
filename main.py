@@ -19,7 +19,7 @@ flags.DEFINE_float('w_decay_factor', 0.001, 'Weight decay factor.')
 flags.DEFINE_integer('num_steps', 5000, 'Number of update steps to run.')
 flags.DEFINE_string(
     'feature_type',
-    'raw',
+    'default',
     'Feature type, supports [raw, deafult, custom]')
 flags.DEFINE_string('opt_method', 'iter', 'Supports ["iter", "qp"]')
 
@@ -37,7 +37,6 @@ def main(_):
     # Load dataset and data processing.
     train_set = read_dataset("data/train.txt", "data/image_data/")
     train_set = preprocess_data(train_set, feature_type)
-
     # Initialize model.
     ndim = train_set['image'][0].shape[0]
     model = SupportVectorMachine(
