@@ -30,16 +30,17 @@ class SupportVectorMachine(LinearModel):
         loss_grad = None
         # Implementation here.
         pass
-        N = y.shape[0]
+        N = f.shape[0]
         K = self.w.shape[0]
         reg_grad = self.w_decay_factor*self.w
         loss_grad = np.zeros((K,1))
         for i in range(N):
-            indicator = 1. if f[i][0] < 1 else 0.
+            indicator = 1. if y[i][0]*f[i][0] < 1 else 0.
             x = self.x[i].reshape(K,1)
-            loss_grad += -y[i][0]*x*indicator
+            loss_grad = loss_grad -y[i][0]*x*indicator
         total_grad = reg_grad + loss_grad
         return total_grad
+        
 
     def total_loss(self, f, y):
         """The sum of the loss across batch examples + L2 regularization.
@@ -53,8 +54,12 @@ class SupportVectorMachine(LinearModel):
         """
         # Implementation here.
         l2_loss = 0.5*self.w_decay_factor*(np.linalg.norm(self.w)**2)
+        N = f.shape[0]
         z = np.matmul(y.transpose(),f)[0][0]
-        hinge_loss = max(0, 1-z)
+        hinge_loss = 0
+        for i in range(N):
+            z = max(0,1-y[i][0]*f[i][0])
+            hinge_loss += z
         total_loss = hinge_loss + l2_loss
         return total_loss
 

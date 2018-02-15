@@ -129,14 +129,15 @@ def eval_model(data, model):
     # Implementation here.
     x = data['image']
     y = data['label']
-    f = model.forward(x)
+    y_hat = model.forward(x)
+    f = model.predict(y_hat)
     loss = model.total_loss(f,y)
     N = y.shape[0]
     err = 0
     for i in range(N):
         if y[i][0] != f[i][0]:
             err += 1
-    acc = 1 - err/N
+    acc = 1 - float(err)/float(N)
     return loss, acc
 
 def unison_shuffled(a, b):
