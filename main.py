@@ -19,7 +19,7 @@ flags.DEFINE_float('w_decay_factor', 0.001, 'Weight decay factor.')
 flags.DEFINE_integer('num_steps', 5000, 'Number of update steps to run.')
 flags.DEFINE_string(
     'feature_type',
-    'default',
+    'raw',
     'Feature type, supports [raw, deafult, custom]')
 flags.DEFINE_string('opt_method', 'iter', 'Supports ["iter", "qp"]')
 

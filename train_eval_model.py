@@ -40,11 +40,11 @@ def train_model(data, model, learning_rate=0.001, batch_size=16,
     num_steps_per_epoch = np.ceil(N/batch_size)
     num_epoch = np.ceil(num_steps/num_steps_per_epoch)
     count = 0
-    for epoch in range(num_epoch):
+    for epoch in range(int(num_epoch)):
         #shuffle data if needed
         if shuffle:
             x,y = unison_shuffled(x,y)
-        for i in range(num_steps_per_epoch):
+        for i in range(int(num_steps_per_epoch)):
             if count >= num_steps:
                 return model
             if i == (num_steps_per_epoch - 1):
