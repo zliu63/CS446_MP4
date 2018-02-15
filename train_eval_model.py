@@ -91,7 +91,9 @@ def train_model_qp(data, model):
     # Implementation here (do not modify the code above)
     pass
     # Set model.w
-    model.w = None
+    k = data['image'].shape[1]+1
+    tmp = z[0:k]
+    model.w = z[0:k]
 
 
 def qp_helper(data, model):
@@ -112,6 +114,28 @@ def qp_helper(data, model):
     G = None
     h = None
     # Implementation here.
+    N = data['image'].shape[0]
+    k = data['image'].shape[1]+1
+    x = data['image']
+    x = np.insert(x,x.shape[1],1,axis=1)
+    y = data['label']
+    h = np.zeros((N*2,1))
+    h[0:N] = h[0:N]-1
+    I = -1*np.identity(N)
+    zeros = np.zeros((N,k))
+    YX = np.zeros((N,k))
+    for i in range(N):
+        for j in range(k):
+            YX[i][j] = -1*y[i][0]*x[i][j]
+    G = np.zeros((N*2,N+k))
+    G_upper = np.concatenate((YX, I), axis=1)
+    G_lower = np.concatenate((zeros, I), axis=1)
+    G = np.concatenate((G_upper, G_lower),axis = 0)    
+    q = np.zeros((N+k,1))
+    q[k:] = q[k:]+1
+    P = np.zeros((N+k,N+k))
+    for i in range(k):
+        P[i][i] = model.w_decay_factor
     return P, q, G, h
 
 

@@ -20,7 +20,7 @@ flags.DEFINE_integer('num_steps', 5000, 'Number of update steps to run.')
 flags.DEFINE_string(
     'feature_type',
     'default',
-    'Feature type, supports [raw, deafult, custom]')
+    'Feature type, supports [raw, default, custom]')
 flags.DEFINE_string('opt_method', 'iter', 'Supports ["iter", "qp"]')
 
 
